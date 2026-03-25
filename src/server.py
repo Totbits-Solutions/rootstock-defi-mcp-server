@@ -1,13 +1,47 @@
 """FastMCP server entry point with async lifespan."""
 
-# TODO: Implement server
-# - FastMCP instance creation
-# - Async lifespan: initialize services, providers, DI
-# - Import and register tools
-# - main() entry point
+from collections.abc import AsyncIterator
+from typing import Any
+
+from fastmcp import FastMCP
+from fastmcp.server.lifespan import Lifespan
+
+from .config import Settings
+from .domain.pricing.services import PricingService
+from .infrastructure.blockchain.gateway import Web3BlockchainGateway
+from .infrastructure.factory import ProviderFactory
+
+
+async def _app_lifespan(_server: FastMCP) -> AsyncIterator[dict[str, Any]]:
+    """Initialize all services at startup, tear down on shutdown."""
+    settings = Settings()
+
+    gateway = Web3BlockchainGateway(settings.rsk_node_url)
+    factory = ProviderFactory(gateway)
+
+    pricing_service = PricingService(factory.create_price_providers())
+
+    yield {
+        "settings": settings,
+        "gateway": gateway,
+        "pricing_service": pricing_service,
+    }
+
+
+mcp = FastMCP(
+    name="rootstock-defi-mcp",
+    instructions=(
+        "MCP server for on-chain DeFi analysis on Rootstock (RSK). "
+        "Query token prices, stablecoin health, and lending rates "
+        "from MoC, RoC V2, Tropykus, and Sovryn protocols."
+    ),
+    lifespan=Lifespan(_app_lifespan),
+)
+
+# Register tools — import triggers @mcp.tool() decoration
+from .tools import token_prices as _token_prices  # noqa: E402, F401
 
 
 def main() -> None:
     """Entry point for the rootstock-mcp CLI command."""
-    # TODO: Start FastMCP server
-    pass
+    mcp.run()
