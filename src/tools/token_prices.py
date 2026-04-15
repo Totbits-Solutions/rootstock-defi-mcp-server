@@ -1,7 +1,10 @@
 """MCP tool: get_token_prices — query on-chain token prices."""
 
+from typing import Annotated, Any
+
 from fastmcp import Context
 from fastmcp.exceptions import ToolError
+from pydantic import Field
 
 from ..application.get_token_prices import get_token_prices as get_token_prices_uc
 from ..dependencies import get_pricing_service
@@ -20,9 +23,18 @@ from ..server import mcp
     ),
 )
 async def get_token_prices(
-    tokens: list[str] | None = None,
+    tokens: Annotated[
+        list[str] | None,
+        Field(
+            description=(
+                "Tokens to query. Omit or pass null for all supported tokens. "
+                "Valid values: RBTC, BPRO, RIF, RIFPRO, DOC, USDRIF."
+            ),
+            examples=[["RBTC"], ["DOC", "RIF"]],
+        ),
+    ] = None,
     ctx: Context | None = None,
-) -> list[dict]:
+) -> list[dict[str, Any]]:
     """Query on-chain token prices from MoC and RoC V2 oracles."""
     service = get_pricing_service()
 

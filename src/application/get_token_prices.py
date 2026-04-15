@@ -1,5 +1,7 @@
 """Use case: query token prices (all or filtered by token)."""
 
+from typing import Any
+
 from ..domain.pricing.services import PricingService
 from ..domain.shared.models import Token
 
@@ -7,7 +9,7 @@ from ..domain.shared.models import Token
 async def get_token_prices(
     service: PricingService,
     tokens: list[Token] | None = None,
-) -> list[dict]:
+) -> list[dict[str, Any]]:
     """Fetch token prices and return serializable results.
 
     Args:

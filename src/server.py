@@ -39,6 +39,7 @@ mcp = FastMCP(
 )
 
 # Register tools — import triggers @mcp.tool() decoration
+from .tools import stablecoin_health as _stablecoin_health  # noqa: E402, F401
 from .tools import token_prices as _token_prices  # noqa: E402, F401
 
 
