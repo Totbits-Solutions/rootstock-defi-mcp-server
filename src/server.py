@@ -1,4 +1,4 @@
-"""FastMCP server entry point with async lifespan."""
+"""FastMCP server entry point with async lifespan"""
 
 from collections.abc import AsyncIterator
 from typing import Any
@@ -7,6 +7,7 @@ from fastmcp import FastMCP
 from fastmcp.server.lifespan import Lifespan
 
 from .config import Settings
+from .domain.lending.services import LendingService
 from .domain.pricing.services import PricingService
 from .infrastructure.blockchain.gateway import Web3BlockchainGateway
 from .infrastructure.factory import ProviderFactory
@@ -20,11 +21,13 @@ async def _app_lifespan(_server: FastMCP) -> AsyncIterator[dict[str, Any]]:
     factory = ProviderFactory(gateway)
 
     pricing_service = PricingService(factory.create_price_providers())
+    lending_service = LendingService(factory.create_lending_providers())
 
     yield {
         "settings": settings,
         "gateway": gateway,
         "pricing_service": pricing_service,
+        "lending_service": lending_service,
     }
 
 
@@ -39,6 +42,7 @@ mcp = FastMCP(
 )
 
 # Register tools — import triggers @mcp.tool() decoration
+from .tools import lending_rates as _lending_rates  # noqa: E402, F401
 from .tools import stablecoin_health as _stablecoin_health  # noqa: E402, F401
 from .tools import token_prices as _token_prices  # noqa: E402, F401
 
