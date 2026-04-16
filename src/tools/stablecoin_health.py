@@ -34,8 +34,7 @@ async def get_stablecoin_health(
         list[str] | None,
         Field(
             description=(
-                "Stablecoins to query. Omit or pass null for all supported "
-                "stablecoins. Valid values: DOC, USDRIF."
+                "Stablecoins to query. Omit or pass null for all supported stablecoins. Valid values: DOC, USDRIF."
             ),
             examples=[["DOC"], ["DOC", "USDRIF"]],
         ),
@@ -49,8 +48,7 @@ async def get_stablecoin_health(
         parsed = [Token(t) for t in tokens] if tokens else None
     except ValueError as e:
         raise ToolError(
-            f"Invalid token: {e}. "
-            f"Only the following stablecoins are supported: {_STABLECOIN_NAMES}."
+            f"Invalid token: {e}. Only the following stablecoins are supported: {_STABLECOIN_NAMES}."
         ) from e
 
     if parsed:

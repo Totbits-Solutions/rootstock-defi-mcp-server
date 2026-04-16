@@ -2,8 +2,10 @@
 
 from unittest.mock import AsyncMock, MagicMock
 
+from src.application.get_lending_rates import get_lending_rates
 from src.application.get_stablecoin_health import get_stablecoin_health
 from src.application.get_token_prices import get_token_prices
+from src.domain.lending.models import LendingMarket, PoolMetrics, RateInfo
 from src.domain.pricing.models import (
     CollateralInfo,
     CoverageMetrics,
@@ -23,9 +25,26 @@ def _make_token_price(token: Token, price: float) -> TokenPrice:
     )
 
 
-def _make_stablecoin_health(
-    token: Token, protocol: Protocol = Protocol.MOC
-) -> StablecoinHealth:
+def _make_lending_market(market: str, protocol: Protocol = Protocol.TROPYKUS) -> LendingMarket:
+    return LendingMarket(
+        market=market,
+        protocol=protocol,
+        rates=RateInfo(
+            supply_apr=2.5,
+            supply_apy=2.53,
+            borrow_apr=5.0,
+            borrow_apy=5.12,
+        ),
+        pool=PoolMetrics(
+            total_supply_usd=1_000_000.0,
+            total_borrows_usd=400_000.0,
+            available_liquidity_usd=600_000.0,
+            utilization_rate=0.4,
+        ),
+    )
+
+
+def _make_stablecoin_health(token: Token, protocol: Protocol = Protocol.MOC) -> StablecoinHealth:
     return StablecoinHealth(
         token=token,
         protocol_price_usd=1.0,
@@ -126,4 +145,58 @@ class TestGetStablecoinHealth:
         mock_service.get_stablecoin_health = AsyncMock(return_value={})
 
         result = await get_stablecoin_health(mock_service)
+        assert result == []
+
+
+class TestGetLendingRates:
+    async def test_returns_all_rates(self) -> None:
+        mock_service = MagicMock()
+        mock_service.get_all_rates = AsyncMock(
+            return_value=[
+                _make_lending_market("kDOC", Protocol.TROPYKUS),
+                _make_lending_market("iDOC", Protocol.SOVRYN),
+            ]
+        )
+
+        result = await get_lending_rates(mock_service)
+
+        mock_service.get_all_rates.assert_called_once_with()
+        assert isinstance(result, list)
+        assert len(result) == 2
+        markets = {item["market"] for item in result}
+        assert markets == {"kDOC", "iDOC"}
+
+    async def test_filtered_by_protocol(self) -> None:
+        mock_service = MagicMock()
+        mock_service.get_rates_by_protocol = AsyncMock(
+            return_value=[
+                _make_lending_market("kDOC", Protocol.TROPYKUS),
+                _make_lending_market("kRBTC", Protocol.TROPYKUS),
+            ]
+        )
+
+        result = await get_lending_rates(mock_service, protocol=Protocol.TROPYKUS)
+
+        mock_service.get_rates_by_protocol.assert_called_once_with(Protocol.TROPYKUS)
+        assert len(result) == 2
+        assert all(item["protocol"] == "tropykus" for item in result)
+
+    async def test_filtered_by_protocol_and_market(self) -> None:
+        mock_service = MagicMock()
+        mock_service.get_market = AsyncMock(
+            return_value=_make_lending_market("kDOC", Protocol.TROPYKUS),
+        )
+
+        result = await get_lending_rates(mock_service, protocol=Protocol.TROPYKUS, market="kDOC")
+
+        mock_service.get_market.assert_called_once_with(Protocol.TROPYKUS, "kDOC")
+        assert len(result) == 1
+        assert result[0]["market"] == "kDOC"
+        assert result[0]["protocol"] == "tropykus"
+
+    async def test_empty_result(self) -> None:
+        mock_service = MagicMock()
+        mock_service.get_all_rates = AsyncMock(return_value=[])
+
+        result = await get_lending_rates(mock_service)
         assert result == []

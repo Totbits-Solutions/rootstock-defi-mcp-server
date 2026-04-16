@@ -15,9 +15,7 @@ class PricingService:
             for token in provider.supported_tokens():
                 self._token_to_provider[token] = provider
 
-    async def get_prices(
-        self, tokens: list[Token] | None = None
-    ) -> dict[Token, TokenPrice]:
+    async def get_prices(self, tokens: list[Token] | None = None) -> dict[Token, TokenPrice]:
         target = tokens or list(self._token_to_provider.keys())
         results: dict[Token, TokenPrice] = {}
         for token in target:
@@ -27,9 +25,7 @@ class PricingService:
             results[token] = await provider.get_price(token)
         return results
 
-    async def get_stablecoin_health(
-        self, tokens: list[Token] | None = None
-    ) -> dict[Token, StablecoinHealth]:
+    async def get_stablecoin_health(self, tokens: list[Token] | None = None) -> dict[Token, StablecoinHealth]:
         stablecoins = tokens or [Token.DOC, Token.USDRIF]
         results: dict[Token, StablecoinHealth] = {}
         for token in stablecoins:
@@ -46,9 +42,7 @@ class PricingService:
         return ((market_price - peg) / peg) * 100
 
     @staticmethod
-    def evaluate_coverage_status(
-        coverage: float, target: float, liq_threshold: float
-    ) -> PegStatus:
+    def evaluate_coverage_status(coverage: float, target: float, liq_threshold: float) -> PegStatus:
         if coverage > target:
             return PegStatus.HEALTHY
         if coverage > liq_threshold:

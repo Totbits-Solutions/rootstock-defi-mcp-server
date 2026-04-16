@@ -104,11 +104,7 @@ class MoCPriceProvider(PriceProvider):
             reference_price_usd=btc_price_usd,
         )
 
-        peg_deviation = (
-            PricingService.calculate_peg_deviation(market_price)
-            if market_price is not None
-            else None
-        )
+        peg_deviation = PricingService.calculate_peg_deviation(market_price) if market_price is not None else None
 
         status = PricingService.evaluate_coverage_status(coverage, target, liq_threshold)
 

@@ -14,9 +14,7 @@ from ..domain.shared.exceptions import DomainError
 from ..domain.shared.models import Protocol
 from ..server import mcp
 
-LENDING_PROTOCOLS: frozenset[Protocol] = frozenset(
-    {Protocol.TROPYKUS, Protocol.SOVRYN}
-)
+LENDING_PROTOCOLS: frozenset[Protocol] = frozenset({Protocol.TROPYKUS, Protocol.SOVRYN})
 _PROTOCOL_NAMES = ", ".join(sorted(p.value for p in LENDING_PROTOCOLS))
 
 
@@ -35,8 +33,7 @@ async def get_lending_rates(
         str | None,
         Field(
             description=(
-                "Lending protocol to query. Omit for all supported protocols. "
-                "Valid values: tropykus, sovryn."
+                "Lending protocol to query. Omit for all supported protocols. Valid values: tropykus, sovryn."
             ),
             examples=["tropykus", "sovryn"],
         ),
@@ -63,9 +60,7 @@ async def get_lending_rates(
             parsed_protocol = Protocol(protocol)
         except ValueError as e:
             raise ToolError(
-                f"Invalid protocol: {e}. "
-                f"Only the following lending protocols are supported: "
-                f"{_PROTOCOL_NAMES}."
+                f"Invalid protocol: {e}. Only the following lending protocols are supported: {_PROTOCOL_NAMES}."
             ) from e
 
         if parsed_protocol not in LENDING_PROTOCOLS:
@@ -76,10 +71,7 @@ async def get_lending_rates(
             )
 
     if market is not None and parsed_protocol is None:
-        raise ToolError(
-            "Parameter 'market' requires 'protocol' to be set "
-            f"(valid protocols: {_PROTOCOL_NAMES})."
-        )
+        raise ToolError(f"Parameter 'market' requires 'protocol' to be set (valid protocols: {_PROTOCOL_NAMES}).")
 
     try:
         result = await get_lending_rates_uc(service, parsed_protocol, market)

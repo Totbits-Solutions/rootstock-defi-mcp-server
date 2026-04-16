@@ -23,9 +23,7 @@ class TestContractRegistry:
     @pytest.mark.parametrize("contract_id", list(ContractId))
     def test_address_is_valid_checksum(self, contract_id: ContractId) -> None:
         info = CONTRACT_REGISTRY[contract_id]
-        assert Web3.is_checksum_address(info.address), (
-            f"{contract_id}: {info.address} is not a valid checksum address"
-        )
+        assert Web3.is_checksum_address(info.address), f"{contract_id}: {info.address} is not a valid checksum address"
 
     @pytest.mark.parametrize("contract_id", list(ContractId))
     def test_abi_has_at_least_one_function(self, contract_id: ContractId) -> None:

@@ -32,9 +32,7 @@ class Web3BlockchainGateway(BlockchainGateway):
         except BlockchainQueryError:
             raise
         except Exception as e:
-            raise BlockchainQueryError(
-                f"Call to {contract_id}.{function_name} failed: {e}"
-            ) from e
+            raise BlockchainQueryError(f"Call to {contract_id}.{function_name} failed: {e}") from e
 
     async def is_connected(self) -> bool:
         """Check connectivity with the RSK node."""

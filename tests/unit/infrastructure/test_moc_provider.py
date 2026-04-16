@@ -52,21 +52,19 @@ class TestGetPrice:
         assert result.protocol == Protocol.MOC
         gateway.call.assert_called_once_with(ContractId.BTC_USD_ORACLE, "peek")
 
-    async def test_rbtc_invalid_oracle_raises(
-        self, provider: MoCPriceProvider, gateway: AsyncMock
-    ) -> None:
+    async def test_rbtc_invalid_oracle_raises(self, provider: MoCPriceProvider, gateway: AsyncMock) -> None:
         gateway.call.return_value = _peek_invalid()
         with pytest.raises(BlockchainQueryError, match="no valid value"):
             await provider.get_price(Token.RBTC)
 
     async def test_bpro_price(self, provider: MoCPriceProvider, gateway: AsyncMock) -> None:
         gateway.call.side_effect = [
-            150 * 10**18,   # bproUsdPrice
+            150 * 10**18,  # bproUsdPrice
             0.002 * 10**18,  # bproTecPrice (in BTC, as int)
         ]
         # Fix: side_effect needs int values
         gateway.call.side_effect = [
-            int(150 * 10**18),
+            (150 * 10**18),
             int(0.002 * 10**18),
         ]
         result = await provider.get_price(Token.BPRO)
@@ -76,9 +74,7 @@ class TestGetPrice:
         assert result.price_btc is not None
         assert result.protocol == Protocol.MOC
 
-    async def test_doc_price_is_pegged(
-        self, provider: MoCPriceProvider, gateway: AsyncMock
-    ) -> None:
+    async def test_doc_price_is_pegged(self, provider: MoCPriceProvider, gateway: AsyncMock) -> None:
         result = await provider.get_price(Token.DOC)
         assert result.token == Token.DOC
         assert result.price_usd == 1.0
@@ -127,9 +123,7 @@ class TestGetStablecoinHealth:
         assert health.collateral.locked_amount == 100.0
         assert health.status == PegStatus.HEALTHY
 
-    async def test_doc_health_with_amm_price(
-        self, provider: MoCPriceProvider, gateway: AsyncMock
-    ) -> None:
+    async def test_doc_health_with_amm_price(self, provider: MoCPriceProvider, gateway: AsyncMock) -> None:
         btc_price = 67_000 * 10**18
         coverage = int(2.0 * 10**18)
         doc_supply = 1_000_000 * 10**18
@@ -145,8 +139,13 @@ class TestGetStablecoinHealth:
         amm_path = ["0xAddr1", "0xAddr2", "0xAddr3"]
 
         gateway.call.side_effect = [
-            btc_price, coverage, doc_supply, bpro_supply,
-            locked_btc, target, liq,
+            btc_price,
+            coverage,
+            doc_supply,
+            bpro_supply,
+            locked_btc,
+            target,
+            liq,
             amm_path,  # conversionPath
             amm_rate,  # rateByPath
         ]
@@ -157,8 +156,6 @@ class TestGetStablecoinHealth:
         assert health.peg_deviation_pct is not None
         assert health.status == PegStatus.WARNING  # coverage 2.0 < target 3.0
 
-    async def test_non_doc_returns_none(
-        self, provider: MoCPriceProvider, gateway: AsyncMock
-    ) -> None:
+    async def test_non_doc_returns_none(self, provider: MoCPriceProvider, gateway: AsyncMock) -> None:
         result = await provider.get_stablecoin_health(Token.RBTC)
         assert result is None

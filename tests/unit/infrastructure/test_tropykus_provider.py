@@ -32,11 +32,11 @@ class TestGetMarket:
     ) -> None:
         # supply_rate, borrow_rate, cash, borrows, reserves
         gateway.call.side_effect = [
-            int(2e13),       # supplyRatePerBlock (~2% APY)
-            int(5e13),       # borrowRatePerBlock (~5% APY)
-            500 * 10**18,    # getCash
-            200 * 10**18,    # totalBorrows
-            10 * 10**18,     # totalReserves
+            int(2e13),  # supplyRatePerBlock (~2% APY)
+            int(5e13),  # borrowRatePerBlock (~5% APY)
+            500 * 10**18,  # getCash
+            200 * 10**18,  # totalBorrows
+            10 * 10**18,  # totalReserves
         ]
 
         result = await provider.get_market("kRBTC")
@@ -49,9 +49,7 @@ class TestGetMarket:
         assert result.pool.available_liquidity_usd == 500.0
         assert result.pool.utilization_rate > 0
 
-    async def test_unknown_market_raises(
-        self, provider: TropykusLendingProvider, gateway: AsyncMock
-    ) -> None:
+    async def test_unknown_market_raises(self, provider: TropykusLendingProvider, gateway: AsyncMock) -> None:
         with pytest.raises(BlockchainQueryError, match="Unknown Tropykus market"):
             await provider.get_market("kINVALID")
 
@@ -72,15 +70,29 @@ class TestGetMarket:
 
 
 class TestGetAllMarkets:
-    async def test_returns_four_markets(
-        self, provider: TropykusLendingProvider, gateway: AsyncMock
-    ) -> None:
-        # 5 calls per market × 4 markets = 20 calls
+    async def test_returns_four_markets(self, provider: TropykusLendingProvider, gateway: AsyncMock) -> None:
+        # 5 calls per market x 4 markets = 20 calls
         gateway.call.side_effect = [
-            int(2e13), int(5e13), 500 * 10**18, 200 * 10**18, 10 * 10**18,
-            int(1e13), int(3e13), 1000 * 10**18, 300 * 10**18, 20 * 10**18,
-            int(3e13), int(7e13), 200 * 10**18, 100 * 10**18, 5 * 10**18,
-            int(1e13), int(4e13), 800 * 10**18, 150 * 10**18, 15 * 10**18,
+            int(2e13),
+            int(5e13),
+            500 * 10**18,
+            200 * 10**18,
+            10 * 10**18,
+            int(1e13),
+            int(3e13),
+            1000 * 10**18,
+            300 * 10**18,
+            20 * 10**18,
+            int(3e13),
+            int(7e13),
+            200 * 10**18,
+            100 * 10**18,
+            5 * 10**18,
+            int(1e13),
+            int(4e13),
+            800 * 10**18,
+            150 * 10**18,
+            15 * 10**18,
         ]
 
         results = await provider.get_all_markets()

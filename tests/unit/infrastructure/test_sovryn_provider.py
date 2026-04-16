@@ -27,15 +27,13 @@ class TestSupportedMarkets:
 
 
 class TestGetMarket:
-    async def test_get_market_returns_lending_market(
-        self, provider: SovrynLendingProvider, gateway: AsyncMock
-    ) -> None:
+    async def test_get_market_returns_lending_market(self, provider: SovrynLendingProvider, gateway: AsyncMock) -> None:
         # Sovryn rates are already annualized: 3% = 3 * 1e18
         gateway.call.side_effect = [
-            int(3 * 10**18),    # supplyInterestRate (3% APY)
-            int(8 * 10**18),    # borrowInterestRate (8% APY)
-            1000 * 10**18,      # totalAssetSupply
-            400 * 10**18,       # totalAssetBorrow
+            (3 * 10**18),  # supplyInterestRate (3% APY)
+            (8 * 10**18),  # borrowInterestRate (8% APY)
+            1000 * 10**18,  # totalAssetSupply
+            400 * 10**18,  # totalAssetBorrow
         ]
 
         result = await provider.get_market("iRBTC")
@@ -50,15 +48,11 @@ class TestGetMarket:
         assert result.pool.available_liquidity_usd == 600.0
         assert result.pool.utilization_rate == 40.0
 
-    async def test_unknown_pool_raises(
-        self, provider: SovrynLendingProvider, gateway: AsyncMock
-    ) -> None:
+    async def test_unknown_pool_raises(self, provider: SovrynLendingProvider, gateway: AsyncMock) -> None:
         with pytest.raises(BlockchainQueryError, match="Unknown Sovryn pool"):
             await provider.get_market("iINVALID")
 
-    async def test_utilization_zero_when_supply_zero(
-        self, provider: SovrynLendingProvider, gateway: AsyncMock
-    ) -> None:
+    async def test_utilization_zero_when_supply_zero(self, provider: SovrynLendingProvider, gateway: AsyncMock) -> None:
         gateway.call.side_effect = [
             0,  # supplyInterestRate
             0,  # borrowInterestRate
@@ -71,11 +65,9 @@ class TestGetMarket:
 
 
 class TestGetAllMarkets:
-    async def test_returns_six_pools(
-        self, provider: SovrynLendingProvider, gateway: AsyncMock
-    ) -> None:
-        # 4 calls per pool × 6 pools = 24 calls
-        pool_data = [int(2 * 10**18), int(5 * 10**18), 500 * 10**18, 200 * 10**18]
+    async def test_returns_six_pools(self, provider: SovrynLendingProvider, gateway: AsyncMock) -> None:
+        # 4 calls per pool x 6 pools = 24 calls
+        pool_data = [(2 * 10**18), (5 * 10**18), 500 * 10**18, 200 * 10**18]
         gateway.call.side_effect = pool_data * 6
 
         results = await provider.get_all_markets()

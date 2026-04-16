@@ -43,16 +43,12 @@ class TestGetPrice:
         assert abs(result.price_usd - 0.03) < 1e-10
         assert result.protocol == Protocol.ROC_V2
 
-    async def test_rif_invalid_oracle_raises(
-        self, provider: RoCPriceProvider, gateway: AsyncMock
-    ) -> None:
+    async def test_rif_invalid_oracle_raises(self, provider: RoCPriceProvider, gateway: AsyncMock) -> None:
         gateway.call.return_value = _peek_invalid()
         with pytest.raises(BlockchainQueryError, match="no valid value"):
             await provider.get_price(Token.RIF)
 
-    async def test_rifpro_price_cross_rate(
-        self, provider: RoCPriceProvider, gateway: AsyncMock
-    ) -> None:
+    async def test_rifpro_price_cross_rate(self, provider: RoCPriceProvider, gateway: AsyncMock) -> None:
         rif_price_wei = int(0.03 * 10**18)
         rifpro_in_rif = int(1.15 * 10**18)
 
@@ -68,9 +64,7 @@ class TestGetPrice:
         expected_usd = 1.15 * 0.03
         assert abs(result.price_usd - expected_usd) < 1e-10
 
-    async def test_usdrif_price_is_pegged(
-        self, provider: RoCPriceProvider, gateway: AsyncMock
-    ) -> None:
+    async def test_usdrif_price_is_pegged(self, provider: RoCPriceProvider, gateway: AsyncMock) -> None:
         result = await provider.get_price(Token.USDRIF)
         assert result.token == Token.USDRIF
         assert result.price_usd == 1.0
@@ -78,9 +72,7 @@ class TestGetPrice:
 
 
 class TestGetStablecoinHealth:
-    async def test_usdrif_health(
-        self, provider: RoCPriceProvider, gateway: AsyncMock
-    ) -> None:
+    async def test_usdrif_health(self, provider: RoCPriceProvider, gateway: AsyncMock) -> None:
         rif_price_wei = int(0.03 * 10**18)
         coverage = int(5.0 * 10**18)
         target = int(3.0 * 10**18)
@@ -112,8 +104,6 @@ class TestGetStablecoinHealth:
         assert "USDRIF" in health.supply
         assert "RIFPRO" in health.supply
 
-    async def test_non_usdrif_returns_none(
-        self, provider: RoCPriceProvider, gateway: AsyncMock
-    ) -> None:
+    async def test_non_usdrif_returns_none(self, provider: RoCPriceProvider, gateway: AsyncMock) -> None:
         result = await provider.get_stablecoin_health(Token.RIF)
         assert result is None

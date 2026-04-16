@@ -19,21 +19,15 @@ def test_calculate_peg_deviation_below():
 
 
 def test_evaluate_coverage_healthy():
-    status = PricingService.evaluate_coverage_status(
-        coverage=4.0, target=3.0, liq_threshold=1.5
-    )
+    status = PricingService.evaluate_coverage_status(coverage=4.0, target=3.0, liq_threshold=1.5)
     assert status == PegStatus.HEALTHY
 
 
 def test_evaluate_coverage_warning():
-    status = PricingService.evaluate_coverage_status(
-        coverage=2.0, target=3.0, liq_threshold=1.5
-    )
+    status = PricingService.evaluate_coverage_status(coverage=2.0, target=3.0, liq_threshold=1.5)
     assert status == PegStatus.WARNING
 
 
 def test_evaluate_coverage_liquidation_risk():
-    status = PricingService.evaluate_coverage_status(
-        coverage=1.2, target=3.0, liq_threshold=1.5
-    )
+    status = PricingService.evaluate_coverage_status(coverage=1.2, target=3.0, liq_threshold=1.5)
     assert status == PegStatus.LIQUIDATION_RISK
