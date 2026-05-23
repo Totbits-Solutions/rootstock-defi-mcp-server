@@ -25,8 +25,8 @@ def mock_use_case():
 class TestGetLendingRatesTool:
     async def test_returns_all_rates(self, mock_service, mock_use_case) -> None:
         mock_use_case.return_value = [
-            {"market": "kDOC", "protocol": "tropykus"},
             {"market": "iDOC", "protocol": "sovryn"},
+            {"market": "iRBTC", "protocol": "sovryn"},
         ]
 
         result = await get_lending_rates()
@@ -35,12 +35,12 @@ class TestGetLendingRatesTool:
         assert len(result) == 2
 
     async def test_filtered_by_protocol(self, mock_service, mock_use_case) -> None:
-        mock_use_case.return_value = [{"market": "kDOC", "protocol": "tropykus"}]
+        mock_use_case.return_value = [{"market": "iDOC", "protocol": "sovryn"}]
 
-        result = await get_lending_rates(protocol="tropykus")
+        result = await get_lending_rates(protocol="sovryn")
 
         assert len(result) == 1
-        assert result[0]["protocol"] == "tropykus"
+        assert result[0]["protocol"] == "sovryn"
 
     async def test_invalid_protocol_raises_tool_error(self, mock_service, mock_use_case) -> None:
         with pytest.raises(ToolError, match="Invalid protocol"):
@@ -52,7 +52,7 @@ class TestGetLendingRatesTool:
 
     async def test_market_without_protocol_raises_tool_error(self, mock_service, mock_use_case) -> None:
         with pytest.raises(ToolError, match="requires 'protocol'"):
-            await get_lending_rates(market="kDOC")
+            await get_lending_rates(market="iDOC")
 
     async def test_domain_error_raises_tool_error(self, mock_service, mock_use_case) -> None:
         mock_use_case.side_effect = DomainError("provider timeout")

@@ -29,11 +29,3 @@ class LendingService:
         if not provider:
             raise ProtocolNotSupportedError(f"No provider for {protocol}")
         return await provider.get_market(market)
-
-    @staticmethod
-    def blocks_per_year() -> int:
-        return 1_051_200
-
-    @staticmethod
-    def rate_per_block_to_apy(rate_per_block: float, blocks_per_year: int = 1_051_200) -> float:
-        return ((1 + rate_per_block) ** blocks_per_year - 1) * 100

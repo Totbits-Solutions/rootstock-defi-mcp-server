@@ -1,6 +1,5 @@
-"""Lending providers — Tropykus, Sovryn."""
+"""Lending providers — Sovryn."""
 
 from .sovryn_provider import SovrynLendingProvider
-from .tropykus_provider import TropykusLendingProvider
 
-__all__ = ["SovrynLendingProvider", "TropykusLendingProvider"]
+__all__ = ["SovrynLendingProvider"]

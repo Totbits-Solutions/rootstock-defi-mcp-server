@@ -75,8 +75,8 @@ class TestContractCache:
         mock_contract.functions.__getitem__.return_value = lambda *_args: MagicMock(call=mock_fn)
         gateway._w3.eth.contract = MagicMock(return_value=mock_contract)
 
-        await gateway.call(ContractId.K_RBTC, "supplyRatePerBlock")
-        await gateway.call(ContractId.K_RBTC, "borrowRatePerBlock")
+        await gateway.call(ContractId.I_RBTC, "supplyInterestRate")
+        await gateway.call(ContractId.I_RBTC, "borrowInterestRate")
 
         # contract() should only have been called once (cached on second call)
         gateway._w3.eth.contract.assert_called_once()

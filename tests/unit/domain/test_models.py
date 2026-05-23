@@ -11,5 +11,4 @@ def test_token_enum_values():
 
 def test_protocol_enum_values():
     assert Protocol.MOC == "moc"
-    assert Protocol.TROPYKUS == "tropykus"
     assert Protocol.SOVRYN == "sovryn"

@@ -14,7 +14,7 @@ from ..domain.shared.exceptions import DomainError
 from ..domain.shared.models import Protocol
 from ..server import mcp
 
-LENDING_PROTOCOLS: frozenset[Protocol] = frozenset({Protocol.TROPYKUS, Protocol.SOVRYN})
+LENDING_PROTOCOLS: frozenset[Protocol] = frozenset({Protocol.SOVRYN})
 _PROTOCOL_NAMES = ", ".join(sorted(p.value for p in LENDING_PROTOCOLS))
 
 
@@ -25,33 +25,29 @@ _PROTOCOL_NAMES = ", ".join(sorted(p.value for p in LENDING_PROTOCOLS))
         "Get supply and borrow rates (APR/APY) for lending markets on Rootstock. "
         "Returns rates and pool metrics (total supply/borrows, liquidity, "
         "utilization) per market. Filter by protocol, or by protocol + market "
-        "for a single market. Only Tropykus and Sovryn are supported."
+        "for a single market. Only Sovryn is supported."
     ),
 )
 async def get_lending_rates(
     protocol: Annotated[
         str | None,
         Field(
-            description=(
-                "Lending protocol to query. Omit for all supported protocols. Valid values: tropykus, sovryn."
-            ),
-            examples=["tropykus", "sovryn"],
+            description=("Lending protocol to query. Omit for all supported protocols. Valid values: sovryn."),
+            examples=["sovryn"],
         ),
     ] = None,
     market: Annotated[
         str | None,
         Field(
             description=(
-                "Market name (e.g. 'kDOC', 'kRBTC' for Tropykus; 'iDOC', "
-                "'iRBTC' for Sovryn). Requires 'protocol' to be set. "
-                "Case-sensitive."
+                "Market name (e.g. 'iDOC', 'iRBTC' for Sovryn). Requires 'protocol' to be set. Case-sensitive."
             ),
-            examples=["kDOC", "iRBTC"],
+            examples=["iDOC", "iRBTC"],
         ),
     ] = None,
     ctx: Context | None = None,
 ) -> list[dict[str, Any]]:
-    """Query lending markets from Tropykus and Sovryn."""
+    """Query lending markets from Sovryn."""
     service = get_lending_service()
 
     parsed_protocol: Protocol | None = None

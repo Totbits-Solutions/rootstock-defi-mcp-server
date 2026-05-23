@@ -36,12 +36,6 @@ class ContractId(StrEnum):
     ROC_V2_PROXY = "roc_v2_proxy"
     SOVRYN_SWAP_NETWORK = "sovryn_swap_network"
 
-    # Tropykus markets (Compound v2 fork — kTokens)
-    K_RBTC = "k_rbtc"
-    K_DOC = "k_doc"
-    K_USDRIF = "k_usdrif"
-    K_BPRO = "k_bpro"
-
     # Sovryn pools (bZx fork — iTokens)
     I_RBTC = "i_rbtc"
     I_DOC = "i_doc"
@@ -246,66 +240,6 @@ ERC20_ABI: list[dict[str, Any]] = [
     },
 ]
 
-# Tropykus cToken ABI (Compound v2 fork)
-CTOKEN_ABI: list[dict[str, Any]] = [
-    {
-        "constant": True,
-        "inputs": [],
-        "name": "supplyRatePerBlock",
-        "outputs": [{"name": "", "type": "uint256"}],
-        "type": "function",
-    },
-    {
-        "constant": True,
-        "inputs": [],
-        "name": "borrowRatePerBlock",
-        "outputs": [{"name": "", "type": "uint256"}],
-        "type": "function",
-    },
-    {
-        "constant": True,
-        "inputs": [],
-        "name": "totalBorrows",
-        "outputs": [{"name": "", "type": "uint256"}],
-        "type": "function",
-    },
-    {
-        "constant": True,
-        "inputs": [],
-        "name": "totalSupply",
-        "outputs": [{"name": "", "type": "uint256"}],
-        "type": "function",
-    },
-    {
-        "constant": True,
-        "inputs": [],
-        "name": "totalReserves",
-        "outputs": [{"name": "", "type": "uint256"}],
-        "type": "function",
-    },
-    {
-        "constant": True,
-        "inputs": [],
-        "name": "getCash",
-        "outputs": [{"name": "", "type": "uint256"}],
-        "type": "function",
-    },
-    {
-        "constant": True,
-        "inputs": [],
-        "name": "exchangeRateStored",
-        "outputs": [{"name": "", "type": "uint256"}],
-        "type": "function",
-    },
-    {
-        "constant": True,
-        "inputs": [],
-        "name": "symbol",
-        "outputs": [{"name": "", "type": "string"}],
-        "type": "function",
-    },
-]
-
 # Sovryn iToken ABI (bZx fork)
 ITOKEN_ABI: list[dict[str, Any]] = [
     {
@@ -411,23 +345,6 @@ CONTRACT_REGISTRY: dict[ContractId, ContractInfo] = {
     ContractId.SOVRYN_SWAP_NETWORK: ContractInfo(
         address=_cs("0x98aCE08D2b759a265ae326F010496bcD63C15afc"),
         abi=SWAP_NETWORK_ABI,
-    ),
-    # --- Tropykus markets (kTokens) ---
-    ContractId.K_RBTC: ContractInfo(
-        address=_cs("0x0AeAdB9d4c6A80462a47E87E76e487Fa8B9a37D7"),
-        abi=CTOKEN_ABI,
-    ),
-    ContractId.K_DOC: ContractInfo(
-        address=_cs("0x544eB90E766B405134b3b3f62b6B4c23fCd5FDA2"),
-        abi=CTOKEN_ABI,
-    ),
-    ContractId.K_USDRIF: ContractInfo(
-        address=_cs("0xDdf3CE45fcf080DF61ee61dac5Ddefef7ED4F46C"),
-        abi=CTOKEN_ABI,
-    ),
-    ContractId.K_BPRO: ContractInfo(
-        address=_cs("0x405062731d8656af5950ef952be9fa110878036b"),
-        abi=CTOKEN_ABI,
     ),
     # --- Sovryn pools (iTokens) ---
     ContractId.I_RBTC: ContractInfo(

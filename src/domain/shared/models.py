@@ -17,7 +17,6 @@ class Token(StrEnum):
 class Protocol(StrEnum):
     MOC = "moc"
     ROC_V2 = "roc_v2"
-    TROPYKUS = "tropykus"
     SOVRYN = "sovryn"
 
 

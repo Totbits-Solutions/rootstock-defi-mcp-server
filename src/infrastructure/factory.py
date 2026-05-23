@@ -5,7 +5,6 @@ from ..domain.pricing.ports import PriceProvider
 from ..domain.shared.models import Protocol
 from ..domain.shared.ports import BlockchainGateway
 from .providers.lending.sovryn_provider import SovrynLendingProvider
-from .providers.lending.tropykus_provider import TropykusLendingProvider
 from .providers.pricing.moc_price_provider import MoCPriceProvider
 from .providers.pricing.roc_price_provider import RoCPriceProvider
 
@@ -24,6 +23,5 @@ class ProviderFactory:
 
     def create_lending_providers(self) -> dict[Protocol, LendingProvider]:
         return {
-            Protocol.TROPYKUS: TropykusLendingProvider(self._gateway),
             Protocol.SOVRYN: SovrynLendingProvider(self._gateway),
         }

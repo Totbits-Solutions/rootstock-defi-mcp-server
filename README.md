@@ -10,7 +10,6 @@ All data is read in real time from the Rootstock blockchain — no external APIs
 |---|---|---|---|
 | **Money on Chain (MoC)** | Pricing + Stablecoin | RBTC, BPRO, DOC | BTC-collateralized stablecoin system. DOC pegged to USD, BPRO is the leveraged token |
 | **RIF on Chain V2 (RoC)** | Pricing + Stablecoin | RIF, RIFPRO, USDRIF | RIF-collateralized stablecoin system. USDRIF pegged to USD, RIFPRO is the leveraged token |
-| **Tropykus** | Lending | kRBTC, kDOC, kUSDRIF, kBPRO | Compound v2 fork. Supply/borrow markets with per-block rate conversion |
 | **Sovryn** | Lending | iRBTC, iDOC, iUSDT, iBPro, iXUSD, iDLLR | bZx fork. Supply/borrow markets with annualized rates |
 
 ## Available Tools
@@ -88,31 +87,31 @@ Analyze stablecoin peg health and protocol coverage. Only **DOC** and **USDRIF**
 
 ### `get_lending_rates`
 
-Get supply and borrow rates (APR/APY) for lending markets. Only **Tropykus** and **Sovryn** are supported.
+Get supply and borrow rates (APR/APY) for lending markets. Only **Sovryn** is supported.
 
 **Parameters:**
 | Parameter | Type | Required | Description |
 |---|---|---|---|
-| `protocol` | `str` | No | Filter by protocol. Valid: `tropykus`, `sovryn`. Omit for all |
-| `market` | `str` | No | Filter by market (e.g. `kDOC`, `iRBTC`). **Requires `protocol`** |
+| `protocol` | `str` | No | Filter by protocol. Valid: `sovryn`. Omit for all |
+| `market` | `str` | No | Filter by market (e.g. `iDOC`, `iRBTC`). **Requires `protocol`** |
 
 **Example response:**
 ```json
 [
   {
-    "market": "kDOC",
-    "protocol": "tropykus",
+    "market": "iDOC",
+    "protocol": "sovryn",
     "rates": {
-      "supply_apr": 5.85,
-      "supply_apy": 6.03,
-      "borrow_apr": 10.99,
-      "borrow_apy": 11.61
+      "supply_apr": 3.42,
+      "supply_apy": 3.42,
+      "borrow_apr": 7.18,
+      "borrow_apy": 7.18
     },
     "pool": {
-      "total_supply_usd": 3665876.0,
-      "total_borrows_usd": 3247711.0,
-      "available_liquidity_usd": 418164.0,
-      "utilization_rate": 88.77
+      "total_supply_usd": 1850000.0,
+      "total_borrows_usd": 880000.0,
+      "available_liquidity_usd": 970000.0,
+      "utilization_rate": 47.57
     }
   }
 ]
@@ -230,7 +229,7 @@ The server follows a **hexagonal architecture** (ports and adapters) with two bo
 src/
   domain/
     pricing/        # Token prices + stablecoin health (MoC, RoC V2)
-    lending/        # Supply/borrow rates (Tropykus, Sovryn)
+    lending/        # Supply/borrow rates (Sovryn)
     shared/         # Token, Protocol enums, exceptions, gateway port
   infrastructure/
     blockchain/     # Web3 gateway, contract registry, constants

@@ -36,7 +36,7 @@ mcp = FastMCP(
     instructions=(
         "MCP server for on-chain DeFi analysis on Rootstock (RSK). "
         "Query token prices, stablecoin health, and lending rates "
-        "from MoC, RoC V2, Tropykus, and Sovryn protocols."
+        "from MoC, RoC V2, and Sovryn protocols."
     ),
     lifespan=Lifespan(_app_lifespan),
 )
