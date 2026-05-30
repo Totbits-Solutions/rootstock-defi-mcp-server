@@ -19,6 +19,6 @@ El repo es público y open-source.
 
 https://github.com/Totbits-Solutions/rootstock-defi-mcp-server
 
-Qué protocolo DeFi te gustaría ver conectado a una IA?
+Qué protocolo DeFi te gustaría ver conectado a una AI?
 
 #mcp #defi #rootstock #ia #blockchain #opensource
